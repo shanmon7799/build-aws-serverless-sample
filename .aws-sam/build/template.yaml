@@ -1,21 +1,17 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: >-
-  todos
-
+Description: todos
 Transform:
 - AWS::Serverless-2016-10-31
-
 Resources:
   getAllTodosFunctionToTableConnector:
-    Type: AWS::Serverless::Connector 
+    Type: AWS::Serverless::Connector
     Properties:
       Source:
         Id: getAllTodosFunction
       Destination:
         Id: SampleTable
       Permissions:
-        - Read
-
+      - Read
   getAllTodosFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -23,17 +19,21 @@ Resources:
       Runtime: nodejs16.x
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Description: A simple example includes a HTTP get method to get all items from
+        a DynamoDB table.
       Environment:
         Variables:
-          SAMPLE_TABLE: !Ref SampleTable
+          SAMPLE_TABLE:
+            Ref: SampleTable
       Events:
         Api:
           Type: Api
           Properties:
             Path: /
             Method: GET
-
+      CodeUri: getAllTodosFunction
+    Metadata:
+      SamResourceId: getAllTodosFunction
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -43,8 +43,8 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
-
 Outputs:
   WebEndpoint:
-    Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Description: API Gateway endpoint URL for Prod stage
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
