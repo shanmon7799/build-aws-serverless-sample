@@ -25,7 +25,18 @@ Resources:
         Id: SampleTable
       Permissions:
         - Write
+  
+  getByIdFunctionToTableConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: getByIdFunction
+      Destination:
+        Id: SampleTable
+      Permissions:
+        - Read
 
+  # This is a Lambda function
   getAllTodosFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -62,6 +73,25 @@ Resources:
           Properties:
             Path: /
             Method: POST
+
+  getByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/get-by-id.getByIdHandler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{id}
+            Method: GET
 
   SampleTable:
     Type: AWS::Serverless::SimpleTable

@@ -1,4 +1,3 @@
-
 const tableName = process.env.SAMPLE_TABLE;
 const dynamodb = require('aws-sdk/clients/dynamodb');
 // const docClient = new dynamodb.DocumentClient();
@@ -13,16 +12,6 @@ exports.createOrUpdateTodosHandler = async (event) => {
     }
     // All log statements are written to CloudWatch
     console.info('received:', event);
-
-    // const data = JSON.parse(event.body);
-    // data.id = uuid.v1();
-    // data.updatedAt = new Date().getTime();
-  
-    // // Creates a new item, or replaces an old item with a new item
-    // var params = {
-    //     TableName : tableName,
-    //     Item: data
-    // };
 
     const body = JSON.parse(event.body);
     const id = body.id ? body.id : uuid.v1();
@@ -40,7 +29,6 @@ exports.createOrUpdateTodosHandler = async (event) => {
         body: JSON.stringify(params.Item)
     };
 
-    // All log statements are written to CloudWatch
     console.info(`response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`);
     return response;
 };

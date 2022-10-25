@@ -8,6 +8,6 @@ architecture = "x86_64"
 handler = "src/handlers/get-all-todos.getAllTodosHandler"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["getAllTodosFunction", "createOrUpdateTodosFunction"]
+functions = ["getAllTodosFunction", "createOrUpdateTodosFunction", "getByIdFunction"]
 
 [layer_build_definitions]
