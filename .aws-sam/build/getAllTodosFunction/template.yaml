@@ -16,6 +16,16 @@ Resources:
       Permissions:
         - Read
 
+  createOrUpdateTodosFunctionToTableConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: createOrUpdateTodosFunction
+      Destination:
+        Id: SampleTable
+      Permissions:
+        - Write
+
   getAllTodosFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -33,6 +43,25 @@ Resources:
           Properties:
             Path: /
             Method: GET
+
+  createOrUpdateTodosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/create-or-update-todo.createOrUpdateTodosHandler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: POST
 
   SampleTable:
     Type: AWS::Serverless::SimpleTable
