@@ -30,6 +30,15 @@ Resources:
         Id: SampleTable
       Permissions:
       - Read
+  deleteFunctionToTableConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: deleteFunction
+      Destination:
+        Id: SampleTable
+      Permissions:
+      - Write
   getAllTodosFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -96,6 +105,28 @@ Resources:
       CodeUri: getByIdFunction
     Metadata:
       SamResourceId: getByIdFunction
+  deleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/delete-todo.deleteHandler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to delete one item
+        by id from a DynamoDB table.
+      Environment:
+        Variables:
+          SAMPLE_TABLE:
+            Ref: SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{id}
+            Method: DELETE
+      CodeUri: deleteFunction
+    Metadata:
+      SamResourceId: deleteFunction
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -103,8 +134,8 @@ Resources:
         Name: id
         Type: String
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 Outputs:
   WebEndpoint:
     Description: API Gateway endpoint URL for Prod stage

@@ -4,29 +4,31 @@ const dynamodb = require('aws-sdk/clients/dynamodb');
 const docClient = process.env.AWS_SAM_LOCAL ? new dynamodb.DocumentClient({
     endpoint: "http://host.docker.internal:8000"
   }) : new dynamodb.DocumentClient()
+const uuid = require('uuid');
 
-exports.getByIdHandler = async (event) => {
-    if (event.httpMethod !== 'GET') {
-        throw new Error(`getById only accept GET method, you tried: ${event.httpMethod}`);
+exports.createOrUpdateTodosHandler = async (event) => {
+    if (event.httpMethod !== 'POST') {
+        throw new Error(`postMethod only accepts POST method, you tried: ${event.httpMethod} method.`);
     }
     // All log statements are written to CloudWatch
     console.info('received:', event);
-    
-    const id = event.pathParameters.id;
-    
+
+    const body = JSON.parse(event.body);
+    const id = body.id ? body.id : uuid.v1();
+    const name = body.name;
+
     var params = {
-      TableName : tableName,
-      Key: { id: id },
+        TableName : tableName,
+        Item: { id : id, name: name }
     };
-    const data = await docClient.get(params).promise();
-    const item = data.Item;
+
+    const result = await docClient.put(params).promise();
 
     const response = {
         statusCode: 200,
-        body: JSON.stringify(item)
+        body: JSON.stringify(params.Item)
     };
 
     console.info(`response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`);
-    
     return response;
-}
+};

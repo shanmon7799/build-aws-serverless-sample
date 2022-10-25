@@ -5,25 +5,22 @@ const docClient = process.env.AWS_SAM_LOCAL ? new dynamodb.DocumentClient({
     endpoint: "http://host.docker.internal:8000"
   }) : new dynamodb.DocumentClient()
 
-exports.getByIdHandler = async (event) => {
+exports.getAllTodosHandler = async (event) => {
     if (event.httpMethod !== 'GET') {
-        throw new Error(`getById only accept GET method, you tried: ${event.httpMethod}`);
+        throw new Error(`getAllItems only accept GET method, you tried: ${event.httpMethod}`);
     }
     // All log statements are written to CloudWatch
     console.info('received:', event);
-    
-    const id = event.pathParameters.id;
-    
+
     var params = {
-      TableName : tableName,
-      Key: { id: id },
+        TableName : tableName
     };
-    const data = await docClient.get(params).promise();
-    const item = data.Item;
+    const data = await docClient.scan(params).promise();
+    const items = data.Items;
 
     const response = {
         statusCode: 200,
-        body: JSON.stringify(item)
+        body: JSON.stringify(items)
     };
 
     console.info(`response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`);

@@ -36,6 +36,16 @@ Resources:
       Permissions:
         - Read
 
+  deleteFunctionToTableConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: deleteFunction
+      Destination:
+        Id: SampleTable
+      Permissions:
+        - Write
+
   # This is a Lambda function
   getAllTodosFunction:
     Type: AWS::Serverless::Function
@@ -65,7 +75,6 @@ Resources:
       Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
       Environment:
         Variables:
-          # Make table name accessible as environment variable from function code during execution
           SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:
@@ -84,7 +93,6 @@ Resources:
       Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
       Environment:
         Variables:
-          # Make table name accessible as environment variable from function code during execution
           SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:
@@ -93,6 +101,24 @@ Resources:
             Path: /{id}
             Method: GET
 
+  deleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/delete-todo.deleteHandler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to delete one item by id from a DynamoDB table.
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{id}
+            Method: DELETE
+
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -100,8 +126,8 @@ Resources:
         Name: id
         Type: String
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 
 Outputs:
   WebEndpoint:
