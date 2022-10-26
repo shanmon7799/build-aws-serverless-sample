@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: todos
 Transform:
 - AWS::Serverless-2016-10-31
+Globals:
+  Api:
+    Cors:
+      AllowMethods: '''*'''
+      AllowHeaders: '''*'''
+      AllowOrigin: '''*'''
 Resources:
   getAllTodosFunctionToTableConnector:
     Type: AWS::Serverless::Connector
