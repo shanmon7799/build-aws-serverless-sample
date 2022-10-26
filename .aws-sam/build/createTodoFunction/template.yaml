@@ -23,11 +23,21 @@ Resources:
       Permissions:
         - Read
 
-  createOrUpdateTodosFunctionToTableConnector:
+  createTodoFunctionToTableConnector:
     Type: AWS::Serverless::Connector
     Properties:
       Source:
-        Id: createOrUpdateTodosFunction
+        Id: createTodoFunction
+      Destination:
+        Id: SampleTable
+      Permissions:
+        - Write
+
+  updateTodoFunctionToTableConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: updateTodoFunction
       Destination:
         Id: SampleTable
       Permissions:
@@ -43,11 +53,11 @@ Resources:
       Permissions:
         - Read
 
-  deleteFunctionToTableConnector:
+  deleteTodoFunctionToTableConnector:
     Type: AWS::Serverless::Connector
     Properties:
       Source:
-        Id: deleteFunction
+        Id: deleteTodoFunction
       Destination:
         Id: SampleTable
       Permissions:
@@ -72,10 +82,10 @@ Resources:
             Path: /
             Method: GET
 
-  createOrUpdateTodosFunction:
+  createTodoFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/create-or-update-todo.createOrUpdateTodosHandler
+      Handler: src/handlers/create-todo.createTodoHandler
       Runtime: nodejs16.x
       MemorySize: 128
       Timeout: 100
@@ -89,6 +99,24 @@ Resources:
           Properties:
             Path: /
             Method: POST
+    
+  updateTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/update-todo.updateTodoHandler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP put method to update one item to a DynamoDB table.
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{id}
+            Method: PUT          
 
   getByIdFunction:
     Type: AWS::Serverless::Function
@@ -108,10 +136,10 @@ Resources:
             Path: /{id}
             Method: GET
 
-  deleteFunction:
+  deleteTodoFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/delete-todo.deleteHandler
+      Handler: src/handlers/delete-todo.deleteTodoHandler
       Runtime: nodejs16.x
       MemorySize: 128
       Timeout: 100

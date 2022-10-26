@@ -6,7 +6,7 @@ const docClient = process.env.AWS_SAM_LOCAL ? new dynamodb.DocumentClient({
   }) : new dynamodb.DocumentClient()
 const uuid = require('uuid');
 
-exports.createOrUpdateTodosHandler = async (event) => {
+exports.createTodoHandler = async (event) => {
     if (event.httpMethod !== 'POST') {
         throw new Error(`postMethod only accepts POST method, you tried: ${event.httpMethod} method.`);
     }
@@ -15,11 +15,11 @@ exports.createOrUpdateTodosHandler = async (event) => {
 
     const body = JSON.parse(event.body);
     const id = body.id ? body.id : uuid.v1();
-    const name = body.name;
+    const title = body.title;
 
     var params = {
         TableName : tableName,
-        Item: { id : id, name: name }
+        Item: { id : id, title: title }
     };
 
     const result = await docClient.put(params).promise();

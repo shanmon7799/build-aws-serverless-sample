@@ -5,28 +5,30 @@ const docClient = process.env.AWS_SAM_LOCAL ? new dynamodb.DocumentClient({
     endpoint: "http://host.docker.internal:8000"
   }) : new dynamodb.DocumentClient()
 
-exports.deleteHandler = async (event) => {
-    if (event.httpMethod !== 'DELETE') {
-        throw new Error(`delete todo only accept DELETE method, you tried: ${event.httpMethod}`);
+exports.getByIdHandler = async (event) => {
+    if (event.httpMethod !== 'GET') {
+        throw new Error(`getById only accept GET method, you tried: ${event.httpMethod}`);
     }
     // All log statements are written to CloudWatch
     console.info('received:', event);
     
     const id = event.pathParameters.id;
+    
     var params = {
       TableName : tableName,
       Key: { id: id },
     };
-    const result = await docClient.delete(params).promise();
+    const data = await docClient.get(params).promise();
+    const item = data.Item;
 
     const response = {
         statusCode: 200,
         headers: {
-            "Access-Control-Allow-Headers" : "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS, DELETE"
-        },
-        body: JSON.stringify(params.Key)
+          "Access-Control-Allow-Headers" : "Content-Type",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS, GET"
+      },
+        body: JSON.stringify(item)
     };
 
     console.info(`response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`);

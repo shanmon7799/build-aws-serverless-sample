@@ -5,7 +5,7 @@ const docClient = process.env.AWS_SAM_LOCAL ? new dynamodb.DocumentClient({
     endpoint: "http://host.docker.internal:8000"
   }) : new dynamodb.DocumentClient()
 
-exports.deleteHandler = async (event) => {
+exports.deleteTodoHandler = async (event) => {
     if (event.httpMethod !== 'DELETE') {
         throw new Error(`delete todo only accept DELETE method, you tried: ${event.httpMethod}`);
     }
