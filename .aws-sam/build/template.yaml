@@ -54,6 +54,15 @@ Resources:
         Id: SampleTable
       Permissions:
       - Write
+  searchTodoFunctionToTableConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: searchTodoFunction
+      Destination:
+        Id: SampleTable
+      Permissions:
+      - Read
   getAllTodosFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -164,6 +173,30 @@ Resources:
       CodeUri: deleteTodoFunction
     Metadata:
       SamResourceId: deleteTodoFunction
+  searchTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/search-todo.searchTodoHandler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to search todo by id
+        from a DynamoDB table.
+      Environment:
+        Variables:
+          SAMPLE_TABLE:
+            Ref: SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: GET
+            RequestParameters:
+            - method.request.querystring.title
+      CodeUri: searchTodoFunction
+    Metadata:
+      SamResourceId: searchTodoFunction
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:

@@ -10,7 +10,7 @@ exports.getAllTodosHandler = async (event) => {
         throw new Error(`getAllItems only accept GET method, you tried: ${event.httpMethod}`);
     }
     // All log statements are written to CloudWatch
-    console.info('received:', event);
+    console.info('received:', JSON.stringify(event));
 
     var params = {
         TableName : tableName

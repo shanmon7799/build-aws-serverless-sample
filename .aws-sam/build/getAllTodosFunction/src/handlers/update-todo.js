@@ -11,7 +11,7 @@ exports.updateTodoHandler = async (event) => {
         throw new Error(`postMethod only accepts PUT method, you tried: ${event.httpMethod} method.`);
     }
 
-    console.info('received:', event);
+    console.info('received:', JSON.stringify(event));
     
     const body = JSON.parse(event.body);
     const title = body.title;
