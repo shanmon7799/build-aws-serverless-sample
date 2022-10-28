@@ -9,10 +9,8 @@ exports.getAllTodosHandler = async (event) => {
     if (event.httpMethod !== 'GET') {
         throw new Error(`getAllItems only accept GET method, you tried: ${event.httpMethod}`);
     }
-    // All log statements are written to CloudWatch
-    console.info('received:', JSON.stringify(event));
-
-    var params = {
+    
+    const params = {
         TableName : tableName
     };
     const data = await docClient.scan(params).promise();

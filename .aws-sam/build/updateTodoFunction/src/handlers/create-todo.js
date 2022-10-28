@@ -10,14 +10,12 @@ exports.createTodoHandler = async (event) => {
     if (event.httpMethod !== 'POST') {
         throw new Error(`postMethod only accepts POST method, you tried: ${event.httpMethod} method.`);
     }
-    // All log statements are written to CloudWatch
-    console.info('received:', JSON.stringify(event));
 
     const body = JSON.parse(event.body);
     const id = uuid.v1();
     const title = body.title;
 
-    var params = {
+    const params = {
         TableName : tableName,
         Item: { id : id, title: title }
     };
@@ -35,5 +33,6 @@ exports.createTodoHandler = async (event) => {
     };
 
     console.info(`response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`);
+    
     return response;
 };

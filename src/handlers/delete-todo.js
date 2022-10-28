@@ -9,11 +9,9 @@ exports.deleteTodoHandler = async (event) => {
     if (event.httpMethod !== 'DELETE') {
         throw new Error(`delete todo only accept DELETE method, you tried: ${event.httpMethod}`);
     }
-    // All log statements are written to CloudWatch
-    console.info('received:', JSON.stringify(event));
     
     const id = event.pathParameters.id;
-    var params = {
+    const params = {
       TableName : tableName,
       Key: { id: id },
     };

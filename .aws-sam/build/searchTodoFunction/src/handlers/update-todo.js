@@ -10,14 +10,12 @@ exports.updateTodoHandler = async (event) => {
     if (event.httpMethod !== 'PUT') {
         throw new Error(`postMethod only accepts PUT method, you tried: ${event.httpMethod} method.`);
     }
-
-    console.info('received:', JSON.stringify(event));
     
     const body = JSON.parse(event.body);
     const title = body.title;
     const id = event.pathParameters.id;
 
-    var params = {
+    const params = {
         TableName : tableName,
         Item: { id : id, title: title }
     };
@@ -35,5 +33,6 @@ exports.updateTodoHandler = async (event) => {
     };
 
     console.info(`response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`);
+    
     return response;
 };

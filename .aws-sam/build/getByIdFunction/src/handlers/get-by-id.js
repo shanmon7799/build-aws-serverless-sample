@@ -9,12 +9,9 @@ exports.getByIdHandler = async (event) => {
     if (event.httpMethod !== 'GET') {
         throw new Error(`getById only accept GET method, you tried: ${event.httpMethod}`);
     }
-    // All log statements are written to CloudWatch
-    console.info('received:', JSON.stringify(event));
-    
+
     const id = event.pathParameters.id;
-    
-    var params = {
+    const params = {
       TableName : tableName,
       Key: { id: id },
     };

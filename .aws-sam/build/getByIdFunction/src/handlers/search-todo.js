@@ -9,11 +9,8 @@ exports.searchTodoHandler = async (event) => {
     if (event.httpMethod !== 'GET') {
         throw new Error(`search only accept GET method, you tried: ${event.httpMethod}`);
     }
-    // All log statements are written to CloudWatch
-    // console.info('received:', JSON.stringify(event));
 
     const title = event.queryStringParameters.title;
-  
     const params = {
       FilterExpression: 'contains (title, :title)',
       ExpressionAttributeValues: {
@@ -21,11 +18,8 @@ exports.searchTodoHandler = async (event) => {
       },
       TableName: tableName,
     };
-
     const data = await docClient.scan(params).promise();
     const items = data.Items;
-
-    console.info('result:', JSON.stringify(data));
 
     const response = {
         statusCode: 200,
